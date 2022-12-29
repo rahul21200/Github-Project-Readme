@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection</title>
+</head>
+<body>
+    <div style="position: fixed; text-align: center;">
+        <h1>Emotion Detection Using OpenCV</h1>
+        <h1>Open WebCam Using JavaScript</h1>
+        <br/>
+        <button id="startBtn" onclick="openCam()">Open Webcam</button>
+        <button id="EndBtn" onclick="closeCam()">close Webcam</button>
+        <br/>
+        <video id="videoCam"></video>
+    </div>
+    <script>
+        function openCam(){
+            let All_mediaDevices=navigator.mediaDevices
+            if (!All_mediaDevices || !All_mediaDevices.getUserMedia) {
+                console.log("getUserMedia() not supported.");
+                return;
+            }
+            All_mediaDevices.getUserMedia({
+                audio: false,
+                video: true
+            })
+            .then(function(vidStream) {
+                var video = document.getElementById('videoCam');
+                if ("srcObject" in video) {
+                video.srcObject = vidStream;
+                } else {
+                video.src = window.URL.createObjectURL(vidStream);
+                }
+                video.onloadedmetadata = function(e) {
+                video.play();
+                };
+            })
+            .catch(function(e) {
+                console.log(e.name + ": " + e.message);
+            });
+        }
+    function closeCam(){
+        const video = document.querySelector('video');
+
+        // A video's MediaStream object is available through its srcObject attribute
+        const mediaStream = video.srcObject;
+
+        // Through the MediaStream, you can get the MediaStreamTracks with getTracks():
+        const tracks = mediaStream.getTracks();
+
+        // Tracks are returned as an array, so if you know you only have one, you can stop it with: 
+        tracks[0].stop();
+
+        // Or stop all like so:
+        tracks.forEach(track => track.stop())
+    }
+    </script>
+</body>
+</html>
